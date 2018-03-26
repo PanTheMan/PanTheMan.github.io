@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>A JavaScript Ray Tracer - Richard Ye</title>
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.3/d3.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js"></script>
+    <script type="text/javascript" src="/main.js"></script>
+
+    <meta name="viewport" content="width=device, initial-scale=1">
+</head>
+
+<body>
+
+<div id="wrapper">
+    <header id="header">
+        <div id="header-top">
+            <div id="header-top-inner">
+                <div id="avatar"></div>
+                <h1><a href="/">Richard Ye</a></h1>
+                <nav>
+                    <ul>
+                        <li><a href="/">Blog</a></li>
+                        <li><a href="/projects">Projects</a></li>
+                        <li><a href="javascript: void(0)" id="header-contact-link">Contact</a></li>
+                    </ul>
+                </nav>
+                <div id="header-contact">
+                    <h2>Contact:</h2>
+                        <script type="text/javascript">
+                            tags = atob("PGEgaHJlZj0ibWFpbHRvOnllcmljaEBnbWFpbC5jb20iPnllcmljaEBnbWFpbC5jb208L2E+")
+                            document.write(tags);
+                        </script> (Preferred)<br />
+                        <a href="http://www.github.com/yerich">Github</a> |
+                        <a href="http://www.facebook.com/richardye">Facebook</a> |
+                        <a href="https://www.linkedin.com/profile/view?id=49061895">LinkedIn</a>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="tagline">
+            Gamer and software developer at Riot Games. Words are my own.
+        </div>
+    </header>
+
+    <section id="main">
+<style type="text/css">
+.objective_gallery { border-top: 1px solid #CCC; border-bottom: 1px solid #CCC; padding: 5px 0 5px; margin: 20px 0; vertical-align: top;}
+.objective_gallery span { display: inline-block; width: 200px; padding-right: 10px; font-size: 12px; vertical-align: top; margin-bottom: 5px; line-height: 14px;}
+.objective_gallery a:first-child { display: block;}
+.objective_gallery img { height: 200px; padding-bottom: 5px;}
+
+h3 { margin-top: 50px;}
+</style>
+
+<article>
+    <h1>A JavaScript Ray Tracer</h1>
+    
+    <p>This is my final project for the course <a href="https://www.student.cs.uwaterloo.ca/~cs488/">CS 488: 
+        Introdution to Computer Graphics</a> at the University of Waterloo, taken in Winter 2015.
+        Click any image to view at full resolution.</p>
+    
+    <h2>Online Demo</h2>
+    <p>You can render a few preselected scenes in your browser. Google Chrome is highly recommended due to its relatively good performance.
+        <strong><a href="render.html">Run the ray tracer in your browser &raquo;</a></strong></p>
+    
+    <h2>Main Objectives</h2>
+    
+    <p>Note: Supersampling was done as an extra objective in the Assignment 4 ray tracer, and has been reimplemented.</p>
+    
+    <h3>Objective 1: Mirror Reflection</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/reflections-1.png"><img src="examples/reflections-1.png" alt="Demo image"/></a>
+            Various objects, including a reflective sphere.
+        </span>
+        <span><a href="examples/reflections-2.png"><img src="examples/reflections-2.png" alt="Demo image"/></a>
+            A mirror hallway.
+        </span>
+        <span><a href="examples/reflections-3.png"><img src="examples/reflections-3.png" alt="Demo image"/></a>
+            Teapot model by <a href="http://goanna.cs.rmit.edu.au/~pknowles/models.html">Pyarelal Knowies</a>
+        </span>
+    </div>
+    
+    <p>Mirror reflection was achieved fairly simply for all objects. Mirrors don't need to perfectly reflect all light; 
+        the middle picture above demonstrates a simulation of typical real-world mirrors which are better at reflecting 
+        green light.</p>
+        
+    <h3>Objective 2: Refraction and Transparency</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/refraction-1.png"><img src="examples/refraction-1.png" alt="Demo image"/></a>
+            Two spheres. The one in front has a refraction index of 1.33, and the one behind has a refraction index of 1.2.
+        </span>
+        <span><a href="examples/refraction-2.png"><img src="examples/refraction-2.png" alt="Demo image"/></a>
+            A few partially transparent boxes with no refraction.
+        </span>
+    </div>
+    
+    <p>Refraction was implemented using the application of Snell's law. Transparency was added by adding an optional per-color
+        alpha channel on objects.</p>
+    
+    <h3>Objective 3: Texture Mapping</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/textures-1.png"><img src="examples/textures-1-sm.jpg" alt="Demo image"/></a>
+            Texture mapping on cubes, boxes and planes.
+            <a href="http://mappinghell.net/files/textures/1024/bricks.png">Texture credit</a>
+        </span>
+        <span><a href="examples/textures-2.png"><img src="examples/textures-2.png" alt="Demo image"/></a>
+            Various scalings on textures are permitted, independent of any transformations on the primitive.
+        </span>
+    </div>
+    
+    <h3>Objective 4: Bump Mapping</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/bumpmap-1.png"><img src="examples/bumpmap-1.png" alt="Demo image"/></a>
+            A brick sphere with bump mapping enabled. Observe the deformities in the specular highlights.
+        </span>
+        <span><a href="examples/bumpmap-2.png"><img src="examples/bumpmap-2.png" alt="Demo image"/></a>
+            The same sphere with bump mapping enabled. Note the smoothness of the specular highlights.
+        </span>
+    </div>
+    
+    <h3>Objective 5: Perlin Noise</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/perlin-1.png"><img src="examples/perlin-1.png" alt="Demo image"/></a>
+            The raw Perlin noise data is visible in this image.
+        </span>
+        <span><a href="examples/perlin-2.png"><img src="examples/perlin-2.png" alt="Demo image"/></a>
+            A Perlin-generated wood teapot.
+        </span>
+    </div>
+    
+    <p>Perlin noise was accomplished using linear interpolation. A wood-like texture was created by manipulating
+        the generated Perlin data.</p>
+        
+    <h3>Objective 6: Soft Shadows</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/soft-shadow-1.png"><img src="examples/soft-shadow-1.png" alt="Demo image"/></a>
+            A cube with soft shadows.
+        </span>
+        <span><a href="examples/soft-shadow-1.png"><img src="examples/soft-shadow-2.png" alt="Demo image"/></a>
+            The same cube without soft shadows.
+        </span>
+        <span><a href="examples/soft-shadow-3.png"><img src="examples/soft-shadow-3.png" alt="Demo image"/></a>
+            A model with soft shadows, including self shadows.
+        </span>
+    </div>
+    
+    <p>Soft shadows are supported with spherical light sources.</p>
+    
+    <h3>Objective 7: Adaptive Anti-Aliasing</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/adaptive-aa-1.png"><img src="examples/adaptive-aa-1.png" alt="Demo image"/></a>
+            First, render the scene without any anti-aliasing
+        </span>
+        <span><a href="examples/adaptive-aa-2.png"><img src="examples/adaptive-aa-2.png" alt="Demo image"/></a>
+            Then use a simple edge detection technique to find pixels to anti-alias. Here, the chosen pixels are highlighted.
+        </span>
+        <span><a href="examples/adaptive-aa-3.png"><img src="examples/adaptive-aa-3.png" alt="Demo image"/></a>
+            Re-render the chosen pixels using supersampling.
+        </span>
+        <span><a href="examples/adaptive-aa-4.png"><img src="examples/adaptive-aa-4.png" alt="Demo image"/></a>
+            Detail of the first picture, before anti-aliasing.
+        </span>
+        <span><a href="examples/adaptive-aa-5.png"><img src="examples/adaptive-aa-5.png" alt="Demo image"/></a>
+            Detail of the third picture, after anti-aliasing.
+        </span>
+    </div>
+    
+    <p>A more efficient anti-aliasing technique was devised wherein only pixels that were near an edge would be rendered
+        with more samples.</p>
+        
+    <h3>Objective 8: Depth of Field Effect</h3>
+    
+    <p>Abandoned due to time and performance constraints.</p>
+    
+    <h3>Objective 9: Uniform Spatial Subdivision</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/teapot.png"><img src="examples/teapot.png" alt="Demo image"/></a>
+            512x512, 4 threads, no anti-aliasing, 2464 triangles. <br />No subdivision: 25.7s <br />Uniform grid: 6.8s
+        </span>
+        <span><a href="examples/king.png"><img src="examples/king.png" alt="Demo image"/></a>
+            512x512, 4 threads, no anti-aliasing, 46336 triangles. <br />No subdivision: 143.3s <br />Uniform grid: 27.4s
+        </span>
+    </div>
+    
+    <p>Models are partitioned into a uniform grid, and each triangle is placed into voxels. Intersection of a ray and the model
+        are first tested on the voxel bounding boxes before testing the triangles. This results in a considerable efficiency,
+        particularly in more complicated models.</p>
+        
+    <h3>Objective 10: Final Scene &mdash; The Immortal Game</h3>
+    
+    <img src="final_scene.jpg" alt="Final Scene" style="width: 100%; margin: 10px 0 20px;" />
+    
+    <p><a href="https://en.wikipedia.org/wiki/Immortal_Game">The Immortal Game</a> is one of the most remarkable chess games of
+        all time. This scene shows the final position on the board for the game between Adold Anderssen and Lionel Kieseritzky in
+        1851. White (glass pieces) is down two rooks and a bishop and is has just sacrificed his queen to force black's knight
+        on g8 to give up its protection of the e7 square, allowing white's remaining bishop on d7 to fatally check the black
+        king by moving to e7 after the knight takes the queen. Despite only having three minor pieces available against a full
+        complement of black's pieces, white amazingly manages to eke out a win.</p>
+    
+    <p><a href="final_scene.png">Full resolution, uncropped</a>. 1000x1000, 16xSSAA (adaptive). Approximately 100k triangles.
+        Rendering time: 11 hours, 47 minutes on Google Chrome 41 on Windows 8.1, running on four threads on a Lenovo Y500 
+        with a Intel i7-3630QM.</p>
+        
+    <p><a href="http://www.blender-models.com/model-downloads/objects/id/chess/">Model source</a></p>
+    
+    <p>Black's pieces are slightly reflective (objective 1). White's pieces are refractive (objective 2). Texture mapping is
+        used to create the main chess board (objective 3). Bump mapping is visible on the table (objective 4). Perlin noise is
+        used to generate the border on the chess table (objective 5). Soft shadows are visible to the right of all pieces (objective 6).
+        Adaptive anti-aliasing was used to smooth out edges (objective 7). Octrees were used instead of Uniform Space Partitioning
+        (objective 9) due to performance constraints.</p>
+        
+    <h2>Extra Objectives</h2>
+    
+    <p>The following extra functionality was implemented on top of the stated objectives.</p>
+    
+    <h3 style="margin-top: 10px;">Octrees</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/teapot.png"><img src="examples/teapot.png" alt="Demo image"/></a>
+            512x512, 4 threads, no anti-aliasing, 2464 triangles. <br />No subdivision: 25.7s <br />Uniform grid: 6.8s <br />Octrees: 4.9s
+        </span>
+        <span><a href="examples/king.png"><img src="examples/king.png" alt="Demo image"/></a>
+            512x512, 4 threads, no anti-aliasing, 46336 triangles. <br />No subdivision: 143.3s <br />Uniform grid: 27.4s <br />Octrees: 6.8s
+        </span>
+    </div>
+    
+    <p>Octrees were implemented on top of the uniform spatial subdivision implemented in objective 9. Octrees provide much
+        improved performance for complex models static scenes, and were required for the resonable rendering of the final scene.</p>
+        
+    <h3>Parallel rendering</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/parallel.png"><img src="examples/parallel.png" alt="Demo image"/></a>
+            512x512, no anti-aliasing, octrees, 4-core processor with hyperthreading.<br />1 thread: 436.5s
+            <br /> 2 threads: 223.6s<br />4 threads: 169.3s
+            <br />8 threads: 160.1s
+        </span>
+    </div>
+    
+    <p>Multithreading was implemented using the Web Workers API, for the parallel rendering of the scene.</p>
+    
+    <h3>Dithering</h3>
+    
+    <div class="objective_gallery">
+        <span><a href="examples/dithering-1.png"><img src="examples/dithering-1-sm.png" alt="Demo image"/></a>
+            No dithering. Click on image to view in detail.
+        </span>
+        <span><a href="examples/dithering-2.png"><img src="examples/dithering-2-sm.png" alt="Demo image"/></a>
+            Random dithering. Click on image to view in detail.
+        </span>
+        <span><a href="examples/dithering-3.png"><img src="examples/dithering-3-sm.png" alt="Demo image"/></a>
+            Difference between the two images, with color differences exaggerated by a factor of 256.
+        </span>
+    </div>
+    
+    <p>Though 32-bit color depth is good enough for almost all intents and purposes, some banding is still noticible in smooth gradients, 
+        since there are only, for example, 256 shades of pure grey. Random dithering eliminates any perceived banding.</p>
+</article>
+
+    </section>
+
+    <footer>
+        <a href="/">Home</a> | <a href="/projects">Projects</a> | <a href="http://www.github.com/yerich">GitHub</a> |
+        <script type="text/javascript">
+            tags = atob("PGEgaHJlZj0nbWFpbHRvOnllcmljaEBnbWFpbC5jb20nPkVtYWlsPC9hPg==")
+            document.write(tags);
+        </script> | <a href="/blog.rss">RSS</a><br />
+        Copyright &copy; 2018 Richard Ye. Licensed under the MIT license unless otherwise specified.<br />
+        This website uses cookies for analytical purposes. By continuing to use this website, you agree to accept these cookies.
+    </footer>
+</div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-405998-3");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+
+</body>
+
+</html>
